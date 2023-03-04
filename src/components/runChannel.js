@@ -1,3 +1,4 @@
+import { BroadcastChannel } from 'broadcast-channel';
 const channel = new BroadcastChannel("lc__br");
 
 export const runChannelReceiver = () => {
