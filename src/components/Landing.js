@@ -35,6 +35,7 @@ const Landing = () => {
 
     bc.current.addEventListener('message', (event) => {
         const msg = event.data;
+        console.log("msg received: ", msg)
         setCurrLC(msg)
     })
 
@@ -49,7 +50,7 @@ const Landing = () => {
                 });
 
                 p.addEventListener('show', () => {
-                    // console.log("------------")
+                    console.log("showing notif")
                     bc.current.postMessage(`Current location\nLatitude: ${loc.lc__lat}\nLongitute: ${loc.lc__long}`);
                 })
             }
