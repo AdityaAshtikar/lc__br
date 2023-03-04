@@ -1,4 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { BroadcastChannel } from 'broadcast-channel';
+
+const channel = new BroadcastChannel("lc__br");
+
 // import _1 from '../icons/_1.jpg'
 // import _2 from '../icons/_2.jpg'
 // import _3 from '../icons/_3.jpg'
@@ -16,40 +20,22 @@ import React, { useEffect, useRef, useState } from 'react'
 const Landing = () => {
     const [loc, setLoc] = useState();
 
-    // const [currLC, setCurrLC] = useState()
-    // const currLCRef = useRef(currLC)
-    // const setCurrLCRef = data => {
-    //     currLCRef.current = data;
-    //     setCurrLC(data);
-    // }
-
-    const bc = useRef(new BroadcastChannel("lc__br"));
-
     useEffect(() => {
         const lc__successCallback = (e) => setLoc({ lc__lat: e.coords.latitude, lc__long: e.coords.longitude })
         const lc__errorCallback = (e) => console.log("Error getting location: ", e)
         navigator.geolocation.getCurrentPosition(lc__successCallback, lc__errorCallback);
     }, []);
 
-    bc.current.onmessage = (event) => {
-        const msg = event.data;
-        document.getElementById("currLC").innerHTML = msg
-        // setCurrLCRef(msg);
-    };
-
     function sendNotif() {
         Notification.requestPermission().then(perm => {
             if (perm === "granted" && !!loc.lc__long && !!loc.lc__lat) {
                 // const rnd = Math.ceil(Math.random() * 5)
-                const p = new Notification("Aditya Ashtikar", {
+                new Notification("Aditya Ashtikar", {
                     body: `Latitude: ${loc.lc__lat}\nLongitute: ${loc.lc__long}`,
                     // icon: `${icons.find(p => p.id === rnd)?.img}`,
                     tag: "broadcaster"
                 });
-
-                p.addEventListener('show', () => {
-                    bc.current.postMessage(`Current location\nLatitude: ${loc.lc__lat}\nLongitute: ${loc.lc__long}`);
-                })
+                channel.postMessage(`Current location => Latitude: ${loc.lc__lat}, Longitute: ${loc.lc__long}`)
             }
         })
     }
